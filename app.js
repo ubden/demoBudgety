@@ -60,6 +60,27 @@ var calculateTotal = function(type) {
         return newItem;  
        },
 
+
+       deleteItem: function(type, id) {
+            var ids, index;
+            //id = 6 
+            //ids = [1 2 4 6 8]
+            //index = 3
+            //.map has access to current element, current index of the element, and the array
+            // it returns a brand new array filled the result of the callback on each element
+
+            ids =  data.allItems[type].map(function(current) {
+                return current.id;
+            });
+
+            index = ids.indexOf(id);
+
+            if (index !== -1) {
+                data.allItems[type].splice(index, 1);
+            }
+
+       },
+
        calculateBudget: function(){
 
         // calculate total incomes and total expenses
@@ -149,6 +170,12 @@ var UIController = (function(){
               //Insert the HTML string into the DOM
 
 
+        },
+
+
+        deleteListItem: function(selectorID) {
+            var el = document.getElementById(selectorID);
+            el.parentNode.removeChild(el);
         },
 
         clearFields: function(){
@@ -242,7 +269,7 @@ var controller = (function(budgetCtrl, UICtrl){
         };
 
         var ctrlDeleteItem = function(event) {
-         var itemID, splitID, type, id;
+         var itemID, splitID, type, ID;
          //Not typically the best practice to hard code this way, relying on the DOM not changing
          itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
             
@@ -251,14 +278,14 @@ var controller = (function(budgetCtrl, UICtrl){
             //split returns an array
             splitID = itemID.split('-');
             type = splitID[0];
-            id = splitID[1];
+            ID = parseInt(splitID[1]);
 
             //1. Delete the item from the data structure
-            
+            budgetCtrl.deleteItem(type, ID);
             //2.  Delete the item from the UI
-
+            UICtrl.deleteListItem(itemID);
             //3.  Udpate and show the new budget
-
+            updateBudget();
          }
             
         };
