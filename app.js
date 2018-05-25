@@ -111,7 +111,7 @@ var calculateTotal = function(type) {
         }
        },
 
-       caculatePercentages: function() {
+       calculatePercentages: function() {
 
         data.allItems.exp.forEach( function(cur) {
             cur.calcPercentage(data.totals.inc);
@@ -159,7 +159,10 @@ var UIController = (function(){
         incomeLabel: '.budget__income--value',
         expensesLabel: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
-        container: '.container'
+        container: '.container', 
+        expensesPercLabel: '.item__percentage'
+
+        //THIS WAS THE PROBLEM. START THE VIDE OVER AND REVIEW TO BE SURE YOU'RE UP TO DATE
     }
 
     return {
@@ -236,6 +239,24 @@ var UIController = (function(){
 
         },
 
+        displayPercentages: function(percentages) {
+            var fields = document.querySelectorAll(DOMstrings.expensesPercLabel); //this returns a node list
+            console.log(fields);
+            var nodeListForEach = function(list, callback) {
+                for (var i = 0; i < list.length; i++) {
+                    callback(list[i], i);
+                }
+            };
+
+            nodeListForEach(fields, function(current, index) {
+            if (percentages[index] > 0) {
+                current.textContent = percentages[index] + '%';
+            } else {
+                current.textContent = '---';
+            }    
+        });
+    },
+
         getDOMstrings: function() {
             return DOMstrings;
     }
@@ -277,11 +298,12 @@ var controller = (function(budgetCtrl, UICtrl){
 
     var updatePercentages = function() {
         // 1. Calculate Percentage (sets the this variable on each)
-            budgetCtrl.caculatePercentages();
+            budgetCtrl.calculatePercentages();
         //2. read from budget controller (GETS the data)
         var percentages = budgetCtrl.getPercentages();
         console.log(percentages);
         //3.  display them in the UI
+        UICtrl.displayPercentages(percentages);
     };
 
 
