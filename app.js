@@ -161,9 +161,35 @@ var UIController = (function(){
         percentageLabel: '.budget__expenses--percentage',
         container: '.container', 
         expensesPercLabel: '.item__percentage'
+    };
 
-        //THIS WAS THE PROBLEM. START THE VIDE OVER AND REVIEW TO BE SURE YOU'RE UP TO DATE
-    }
+    var formatNumber = function(num, type) {
+        var numSplit, int, dec, type;
+        /*
+
+       >  + or 1 before number
+       > exactly 2 decimal points
+       > comma separating the thousands
+
+        2310.4567 = 2,310.46
+        2000 = 2,000.00
+        */
+
+        num = Math.abs(num);
+        num = num.toFixed(2); //takes care of decimal place, returns a string
+
+        numSplit = num.split('.');
+        
+        int = numSplit[0];
+        if(int.length > 3) {
+            int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, 3);
+        }
+
+        dec = numSplit[1];
+
+        return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
+
+    };
 
     return {
         getInput: function() {
@@ -194,7 +220,7 @@ var UIController = (function(){
               //Replace placeholder text with data from object
              newHTML = html.replace('%id%', obj.id);
              newHTML = newHTML.replace('%description%', obj.description);
-             newHTML = newHTML.replace('%value%', obj.value);
+             newHTML = newHTML.replace('%value%', formatNumber(obj.value, type));
 
              //Before end refers to adding the html string to the element as the last child
              document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
@@ -226,9 +252,12 @@ var UIController = (function(){
 
         displayBudget: function(obj){
 
-            document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget;
-            document.querySelector(DOMstrings.incomeLabel).textContent = obj.totalInc;
-            document.querySelector(DOMstrings.expensesLabel).textContent = obj.totalExp;
+            var type;
+            obj.budget > 0 ? type = 'inc' : type = 'exp';
+
+            document.querySelector(DOMstrings.budgetLabel).textContent = formatNumber(obj.budget, type);
+            document.querySelector(DOMstrings.incomeLabel).textContent = formatNumber(obj.totalInc, 'inc');
+            document.querySelector(DOMstrings.expensesLabel).textContent = formatNumber(obj.totalExp, 'exp');
             
 
             if (obj.percentage > 0) {
