@@ -276,3 +276,31 @@ h2 {
 .unpaid .item__percentage { box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1); }
 .unpaid:hover .item__description { font-weight: 900; }
 
+
+/*MEDIA QUERIES */
+
+
+@media screen and (max-width: 1040px) {
+    .container {
+        width: 500px;
+    }
+
+    .income {
+        margin-bottom: 25px;
+    }
+}
+
+@media screen and (max-width: 662px) {
+    .container {
+        width: 250px;
+        display: block;
+    }
+
+    .income {
+        margin-bottom: 25px;
+    }
+
+    .add__container{
+        display: flex;
+    }
+}
